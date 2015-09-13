@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Red, Green, Repeat - Red, Green, Repeat</title>
+  <title>Defining behavior with contract tests - Red, Green, Repeat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="keywords" content="">
-  <link rel="canonical" href="http://yourSiteHere/">
+  <link rel="canonical" href="http://yoursitehere/post/2015/contract-test/">
 
   
   
@@ -25,7 +25,7 @@
 <body class="">
 
 <div class="site-wrap">
-    <header class="site-header px2 px-responsive">
+  <header class="site-header px2 px-responsive">
   <div class="mt2 wrap">
     <div class="measure">
       <a href="http://yoursitehere/" class="site-title">Red, Green, Repeat</a>
@@ -46,37 +46,51 @@
   </div>
 </header>
 
-    
-    <div class="post p2 p-responsive wrap" role="main">
-        <div class="measure">
-            <div class="home">
-                <div class="posts">
-                    
-                        
-                            
-                                <div class="post">
-  <a class="post-link" href="http://yoursitehere/post/2015/contract-test/">
-  <p class="post-meta left">Sep 13, 2015</p>
-  <p class="post-author right">Written by </p>
-  <div class="clearfix"></div>
-  <h3 class="h2 post-title">Defining behavior with contract tests </h3>
-  <p class="post-summary"><p>This is a test post.</p>
-</p>
-  </a>
-  
-  <p class="post-meta">Tags:&nbsp;
-  </p>
-</div>
+  <div class="post p2 p-responsive wrap" role="main">
+    <div class="measure">
+      <div class="post-header mb2">
+        <h1 class="py2">Defining behavior with contract tests</h1>
+        <span class="post-meta">Sep 13, 2015 by </span><br>
+        
+      </div>
 
-                            
-                        
-                            
-                        
-                    
-                </div>
-            </div>
-        </div>
+      <article class="post-content">
+      <p>This is a test post.</p>
+
+<pre><code class="language-java">interface UserRepository {
+
+}
+</code></pre>
+
+<pre><code class="language-java">abstract class UserRepositoryContract {
+
+    private UserRepository userRepository;
+    
+    @Before
+    public final void createUserRepository() {
+        this.userReposotory = getEmptyUserRepository();
+    }
+    
+    protected abstract UserRepoisory getEmptyUserReposotory();
+
+    @Test(expected = NoSuchUserException.class)
+    public User getById_UserDoesNotExists_throwsNoSuchUserException() {
+        
+    }
+
+}
+</code></pre>
+
+      </article>
+
+      <p class="post-meta">Tags:&nbsp;
+        
+      </p>
+
+      
+
     </div>
+  </div>
 </div>
     <footer class="footer">
       <div class="p2 wrap">

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title> on Red, Green, Repeat </title>
+      <generator uri="https://gohugo.io">Hugo</generator>
+    <link>http://yourSiteHere/</link>
+    <language>en-us</language>
+    
+    
+    <updated>Sun, 13 Sep 2015 00:00:00 UTC</updated>
+    
+    <item>
+      <title>Defining behavior with contract tests</title>
+      <link>http://yoursitehere/post/2015/contract-test/</link>
+      <pubDate>Sun, 13 Sep 2015 00:00:00 UTC</pubDate>
+      
+      <guid>http://yoursitehere/post/2015/contract-test/</guid>
+      <description>&lt;p&gt;This is a test post.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://yoursitehere/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 UTC</pubDate>
+      
+      <guid>http://yoursitehere/about/</guid>
+      <description>I&amp;rsquo;m a software developer working in the financial industry in Stockholm, Sweden. I&amp;rsquo;m a big proponent of test driven development, although i try to avoid being dogmatic. I don&amp;rsquo;t think there’s one true way to develop software. Different styles suit different needs. Whether a given practice is appealing is highly subjective. For me, TDD really helps me in many of my everyday programming tasks. I will probably write a fair amount of posts about how I do TDD.</description>
+    </item>
+    
+  </channel>
+</rss>
+
