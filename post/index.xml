@@ -3,7 +3,7 @@
   <channel>
       <title>Posts on Red, Green, Repeat </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://yourSiteHere/post/</link>
+    <link>http://eliaslindholm.github.io/post/</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Defining behavior with contract tests</title>
-      <link>http://yoursitehere/post/2015/contract-test/</link>
+      <link>http://eliaslindholm.github.io/post/2015/contract-test/</link>
       <pubDate>Sun, 13 Sep 2015 00:00:00 UTC</pubDate>
       
-      <guid>http://yoursitehere/post/2015/contract-test/</guid>
+      <guid>http://eliaslindholm.github.io/post/2015/contract-test/</guid>
       <description>&lt;p&gt;This is a test post.&lt;/p&gt;
 </description>
     </item>
