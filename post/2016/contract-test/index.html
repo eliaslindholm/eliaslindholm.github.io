@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Design by Contract supported by tests - Mixed thoughts on Software</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="keywords" content="">
+  <link rel="canonical" href="http://eliaslindholm.github.io/post/2016/contract-test/">
+
+  
+  
+
+  
+  
+
+  
+  
+
+  <link rel="stylesheet" type="text/css" href="http://eliaslindholm.github.io//css/combined-min.css">
+
+</head>
+<body class="">
+
+<div class="site-wrap">
+  <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="http://eliaslindholm.github.io/" class="site-title">Mixed thoughts on Software</a>
+      <nav class="site-nav right">
+      <a href="http://eliaslindholm.github.io/about/">About</a>
+<a href="http://eliaslindholm.github.io/tags">Tags</a>
+<a href="http://eliaslindholm.github.io/contact/">Contact</a>
+
+</form>
+
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</header>
+
+  <div class="post p2 p-responsive wrap" role="main">
+    <div class="measure">
+      <div class="post-header mb2">
+        <h1 class="py2">Design by Contract supported by tests</h1>
+        <span class="post-meta">Feb 7, 2016 by Elias Lindholm</span><br>
+        
+      </div>
+
+      <article class="post-content">
+      
+
+<p>In this post I’m going to describe a testing technique that I often find superior to mocking and stubbing. <strong>Contract test&rsquo;s</strong> and <strong>lightweight implementations</strong> applies to all level of testing, but in this post im going to describe it in the context of unit testing where i personally use it a lot to define and verify the behavior of an API. The concept of a Contract Test is not new. I first read a about it in the &ldquo;JUnit recipies&rdquo; book sometime during the last decade, although the author didn’t define them as Contract Tests back then, but rather a teqnique for testing abstract types (abstract classes and interfaces in Java). I&rsquo;ve done a decent amount of in-house training on unit testing at my company over the years, and I’m still surprised that almost every new developer are unfamiliar with the concept of Contract Tests, implying that it hasn&rsquo;t reached a wider audience (at least not in the Stockholm area where I live). I will start by defining what a Contract Test is and show how to write one using JUnit. I will then suggest a couple of uses of which one is a testing technique I often find superior to stubbing.</p>
+
+<h3 id="contract-tests:76dfceb01844cb30f9bdeb51fd3e0ec3">Contract tests</h3>
+
+<p>A Contract Test is an &ldquo;abstract” unit test that defines and verifies the contract of a given API, for instance the <code>List</code> interface in Java. The contract is defined by writing a unit test for every single promise made by an api. By &ldquo;abstract&rdquo; I mean that a Contract Test is not written against a given implementation of an api (<code>ArrayList</code>), but rather against an abstract definition of a given api (the <code>List</code> interface). This allows us to use the same Contract Test to verify the behavior of different providers of a given api (<code>ArrayList</code>, <code>LinkedList</code>). So what does a Contract Test for the <code>List</code> type look like?</p>
+
+<p>The setup of a Contract Test is very mechanical and is pretty much the same for every Contract Test. We start by creating an abstract class to hold the contract. In the class we define a protected factory method intended to be implemented by subclasses to provide an implementation of a <code>List</code>:</p>
+
+<pre><code class="language-java">public abstract class ListContract {
+
+    private List list;
+
+    @Before
+    public final void setup() {
+        this.list = newList();
+    }
+
+    protected abstract List newList();
+}
+</code></pre>
+
+<p>With the initial plumbing in place we start defining the contract by writing unit tests:</p>
+
+<pre><code class="language-java">public abstract class ListContract {
+
+    private List&lt;Object&gt; list;
+
+    @Before
+    public final void setup() {
+        this.list = newList();
+    }
+
+    protected abstract List&lt;Object&gt; newList();
+
+    @Test
+    public void newListIsEmpty() {
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void addIncreasesSizeByOne() {
+        assertEquals(0, list.size());
+        list.add(&quot;foo&quot;);
+        assertEquals(1, list.size());
+    }
+	
+	// more unit tests...
+
+}
+</code></pre>
+
+<p>With the <code>ListContract</code> defined every provider of the <code>List</code> interface can be verified:</p>
+
+<pre><code class="language-java">public class ArrayListTest extends ListContract {
+
+    @Override
+    protected abstract List&lt;Object&gt; newList() {
+        return new ArrayList&lt;&gt;();
+    }
+
+}
+</code></pre>
+
+<p>The <code>ArrayListTest</code> inherits all test cases from <code>ListContract</code>, thus ensuring that the <code>ArrayList</code> implementation obeys the contract of a <code>List</code>. Verifying that a <code>LinkedList</code> obeys the <code>ListContract</code> is equally simple.</p>
+
+<pre><code class="language-java">public class LinkedListTest extends ListContract {
+
+    @Override
+    protected abstract List&lt;Object&gt; newList() {
+        return new LinkedList&lt;&gt;();
+    }
+
+}
+</code></pre>
+
+<p>Thats the basic mechanics of writing a Contract Test! With that in place, lets turn to some uses of Contract Tests.</p>
+
+<h3 id="the-pitfalls-of-stubbing:76dfceb01844cb30f9bdeb51fd3e0ec3">The pitfalls of stubbing</h3>
+
+<p>Stubbing collaborations in a unit test is a common practice. Some of the driving forces might be to:</p>
+
+<ul>
+<li>Break dependencies to external resources</li>
+<li>Test small pieces of the code base in isolation</li>
+<li>Reduce coupling between test code and production code</li>
+<li>Control the behavior of a given collaborator, for instance to inject a &ldquo;failure&rdquo;</li>
+</ul>
+
+<p>However, stubbing doesn&rsquo;t come for free, there&rsquo;s a tradeoff involved. By introducing a stub we might gain faster and more reliable test execution, more focused unit tests, and possibly decreased coupling. But we do so at the risk of making assumptions that does not hold against the production implementation. Every time you stub a method invocation, you make an implicit assumption about the behavior of the corresponding production implementation (yes, that is EVERY time). If you are serious about testing you have to verify that all those assumptions hold true against the production implementation. Another downside with excessive stubbing is that it may lead to a lot of dupplication in test code if we stub out a given interaction over and over again.</p>
+
+<p>Lets look at an example of what might happen when we fail to verify an assumption. Lets say we are writing a web application to handle money transfers. The specification states that the user should receive a message when entering a target account number that does not exist. A unit test might look like this:</p>
+
+<pre><code class="language-java">// TransferServiceTest snippet
+AccountRepository accountRepository = createStub(AccountRepository.class);
+TransferService transferService = 
+	new TransferService(accountRepository);
+
+stub(accountRepository.getAccount(transferRequest.getTargetAccountNo()))
+	.toReturn(null);
+
+TransferResponse response = transferService.transfer(transferRequest);
+
+assertMissingTargetAccountResponse(response);
+</code></pre>
+
+<p>The production code might look something like this:</p>
+
+<pre><code class="language-java">// TransferService snippet
+Account targetAccount = accountRepository.getAccount(transferRequest.getTargetAccountNo());
+if (targetAccount == null) {
+	return missingTargetAccount(transferRequest);
+}
+</code></pre>
+
+<p>The unit test passes and everyone is happy. We release the code but it doesn&rsquo;t take long before we get the first bug report telling that the transfer page crasches from time to time. Burried in the javadoc for the <code>AccountRepository</code> we find the cause for the bug:</p>
+
+<pre><code class="language-java">interface AccountRepository {
+  	/**	
+	* @throws NoSuchAccountException if account does not exist
+	*/
+	Account getAccount(AccountNo accountNo);
+    
+}
+</code></pre>
+
+<p>When we stubbed the <code>getAccount</code> method we made an implicit assumption that the production implementation returns <code>null</code> when an <code>Account</code> is missing. That was a false assumption since the production implementation throws a <code>NoSuchAccountException</code>. What went wrong here? We wrote a unit test for the missing account scenario, and we might also have written an integration test for the <code>AccountRepository</code>, but we still ended up with a nasty bug in production? Somehow we have to verify the assumption we made when stubbing the <code>getAccountMethod</code> (i.e write a test that verifies the assumption is correct). As the number of stubbed interactions increases it gets very challanging to see whether all those assumptions scattered around in unit tests are verified.</p>
+
+<h3 id="an-alternative-to-stubbing:76dfceb01844cb30f9bdeb51fd3e0ec3">An alternative to stubbing</h3>
+
+<p>Instead of stubbing a collaborator over and over again we can create a <strong>lightweight implementation</strong> and use it in all unit tests. To ensure that the lightweight implementation behaves in the same way as the production implementation we create a Contract Test. This removes all assumptions! The Contract Test <strong>ensures</strong> that the lightweight implementation bahaves as the production implementation. Hence, Contract Tests allows for ”assumption free” unit testing!</p>
+
+<p>With an <code>InMemoryAccountRepository</code> in place we might rewrite the test for the missing account scenario:</p>
+
+<pre><code class="language-java">// Unit test snippet for transer service
+AccountRepository accountRepository = new InMemoryAccountRepository();
+TransferService transferService = 
+	new TransferService(accountRepository);
+	
+TransferResponse response = transferService.transfer(transferRequest());
+
+assertMissingTargetAccountResponse(response);
+</code></pre>
+
+<p>The <code>InMemoryAccountRepository</code> is locked to behave as the production implementation by defining the behavior with a Contract Test:</p>
+
+<pre><code class="language-java">abstract class AccountRepositoryContract {
+	
+    @Test(expected = NoSuchAccountException.class)
+    public void throwsNoSuchAccountExceptionWhenGettingMissingAccount {
+        // AccountRepository is empty
+        this.accountRepository.getAccount(AccountId.valeOf(&quot;21&quot;));
+    }
+	
+}
+
+class InMemoryAccountRepository extends AccountRepositoryContract {
+}
+
+class JdbcAccountRepository extends AccountRepositoryContract {
+}
+</code></pre>
+
+<p>The more often you stub a given interaction, the more beneficial it will be to create a lightweight implementation and a Contract Test. <code>Repositories</code>, for instance, tend to be very good candiates to implement lightweight implementation for. Personally, I tend to avoid stubs but I still see some use cases, for instance to inject failures. I also use stubs for &ldquo;strategy&rdquo; and &ldquo;listener&rdquo; like collaborators to reduce dependencies between test code and production code. Other than that I prefer to go for a lightweight in-memory implementation (or the production implementation if I can get away with that).</p>
+
+<p>Locking behavior of lightweight implementation is probably where I use Contract Test most often, but there are other good uses of Contract Test, but thats the topic of another post.</p>
+
+      </article>
+
+      <p class="post-meta">Tags:&nbsp;
+        
+            
+            <a href="http://eliaslindholm.github.io//tags/unittest">unittest</a>
+        
+      </p>
+
+      
+
+    </div>
+  </div>
+</div>
+    <footer class="footer">
+      <div class="p2 wrap">
+        <div class="measure mt1 center">
+      <nav class="social-icons icons">
+<a class="fa fa-rss rss" href="http://eliaslindholm.github.io/index.xml"></a>
+
+<a class="fa fa-twitter twitter" href="https://twitter.com/eliaslindholm"></a>
+
+</nav>
+
+          <small>
+            Copyright &#169; 2015<br>
+            Powered by <a href="http://gohugo.io/" target="_blank">Hugo</a> &amp; <a href="https://github.com/azmelanar/hugo-theme-pixyll" target="_blank">Pixyll</a>
+          </small>
+        </div>
+      </div>
+    </footer>
+
+    
+    <script src="http://eliaslindholm.github.io/js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+    
+
+
+</body>
+</html>
+

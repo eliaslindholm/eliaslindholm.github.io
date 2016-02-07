@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-      <title>Posts on Mixed thoughts on Software </title>
+      <title>Unittest on Mixed thoughts on Software </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://eliaslindholm.github.io/post/</link>
+    <link>http://eliaslindholm.github.io/tags/unittest/</link>
     <language>en-us</language>
     
     

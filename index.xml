@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-      <title> on Red, Green, Repeat </title>
+      <title> on Mixed thoughts on Software </title>
       <generator uri="https://gohugo.io">Hugo</generator>
     <link>http://eliaslindholm.github.io/</link>
     <language>en-us</language>
     
     
-    <updated>Sun, 13 Sep 2015 00:00:00 UTC</updated>
+    <updated>Sun, 07 Feb 2016 00:00:00 UTC</updated>
     
     <item>
-      <title>Defining behavior with contract tests</title>
-      <link>http://eliaslindholm.github.io/post/2015/contract-test/</link>
-      <pubDate>Sun, 13 Sep 2015 00:00:00 UTC</pubDate>
+      <title>Design by Contract supported by tests</title>
+      <link>http://eliaslindholm.github.io/post/2016/contract-test/</link>
+      <pubDate>Sun, 07 Feb 2016 00:00:00 UTC</pubDate>
       
-      <guid>http://eliaslindholm.github.io/post/2015/contract-test/</guid>
-      <description>&lt;p&gt;This is a test post.&lt;/p&gt;
-</description>
+      <guid>http://eliaslindholm.github.io/post/2016/contract-test/</guid>
+      <description>In this post I’m going to describe a testing technique that I often find superior to mocking and stubbing. Contract test&amp;rsquo;s and lightweight implementations applies to all level of testing, but in this post im going to describe it in the context of unit testing where i personally use it a lot to define and verify the behavior of an API. The concept of a Contract Test is not new. I first read a about it in the &amp;ldquo;JUnit recipies&amp;rdquo; book sometime during the last decade, although the author didn’t define them as Contract Tests back then, but rather a teqnique for testing abstract types (abstract classes and interfaces in Java).</description>
     </item>
     
     <item>
