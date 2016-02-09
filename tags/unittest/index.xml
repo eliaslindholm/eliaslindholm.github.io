@@ -15,7 +15,7 @@
       <pubDate>Sun, 07 Feb 2016 00:00:00 UTC</pubDate>
       
       <guid>http://eliaslindholm.github.io/post/2016/contract-test/</guid>
-      <description>In this post I’m going to describe a testing technique that I often find superior to mocking and stubbing. Contract test&amp;rsquo;s and lightweight implementations applies to all level of testing, but in this post im going to describe it in the context of unit testing where i personally use it a lot to define and verify the behavior of an API. The concept of a Contract Test is not new. I first read a about it in the &amp;ldquo;JUnit recipies&amp;rdquo; book sometime during the last decade, although the author didn’t define them as Contract Tests back then, but rather a teqnique for testing abstract types (abstract classes and interfaces in Java).</description>
+      <description>In this post I&amp;rsquo;m going to describe a testing technique that lays a foundation for an alternative to stubbing that I often find superior. Contract test&amp;rsquo;s can be applied to all levels of testing, but in this post im going to describe them in the context of unit testing where i personally often use them to define and verify the behavior of an API. The concept of a Contract Test is not new.</description>
     </item>
     
   </channel>
